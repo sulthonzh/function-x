@@ -1,0 +1,29 @@
+{
+  "name": "function-x",
+  "version": "1.0.0",
+  "description": "Zero-dependency higher-order function utilities",
+  "type": "module",
+  "main": "function-x.js",
+  "bin": {
+    "function-x": "cli.js"
+  },
+  "scripts": {
+    "test": "node --test test.js",
+    "demo": "node cli.js demo"
+  },
+  "keywords": [
+    "functional",
+    "higher-order",
+    "currying",
+    "partial",
+    "composition",
+    "memoization",
+    "utils",
+    "zero-dependencies"
+  ],
+  "author": "Sulthonzh",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
