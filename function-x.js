@@ -12,12 +12,12 @@ export const noop = () => {};
 export const unary = fn => fn.length === 1 ? fn : x => fn(x);
 export const binary = fn => fn.length === 2 ? fn : (x, y) => fn(x, y);
 export const ternary = fn => fn.length === 3 ? fn : (x, y, z) => fn(x, y, z);
-export const negate = (value) => !value;
-export const tap = (value, fn) => {
+export const negate = (predicate) => (...args) => !predicate(...args);
+export const tap = (value) => (fn) => {
   if (typeof fn === 'function') fn(value);
   return value;
 };
-export const over = (fn, ...args) => {
+export const over = (fn) => (...args) => {
   if (Array.isArray(fn)) {
     return fn.map(f => f(...args));
   }
