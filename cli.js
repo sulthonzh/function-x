@@ -162,6 +162,13 @@ const commands = {
 
 // Parse command line arguments
 const args = process.argv.slice(2);
+
+// Handle --version / -V flags
+if (args.length === 1 && (args[0] === '--version' || args[0] === '-V')) {
+  console.log(`function-x v${pkg.version}`);
+  process.exit(0);
+}
+
 const command = args[0] || 'demo';
 
 if (commands[command]) {

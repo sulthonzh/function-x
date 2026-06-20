@@ -1,6 +1,6 @@
 /**
  * function-x - Zero-dependency higher-order function utilities
- * @version 1.0.0
+ * @version 1.1.0
  * @author Sulthonzh
  * @license MIT
  */
@@ -416,7 +416,8 @@ export const createDebouncer = (options = {}) => {
 };
 
 // Version info
-export const version = '1.0.0';
+export const VERSION = '1.1.0';
+export const version = '1.1.0';
 export const description = 'Zero-dependency higher-order function utilities';
 
 // Export all functions as named exports

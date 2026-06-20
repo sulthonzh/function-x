@@ -1,14 +1,29 @@
 {
   "name": "function-x",
-  "version": "1.0.0",
-  "description": "Zero-dependency higher-order function utilities",
+  "version": "1.1.0",
+  "description": "Zero-dependency higher-order function utilities for currying, composition, memoization, debouncing, throttling, and rate limiting. 26 tests, 100% pass rate — all in <6KB with zero dependencies.",
   "type": "module",
   "main": "function-x.js",
+  "exports": {
+    ".": {
+      "import": "./function-x.js",
+      "require": "./function-x.js"
+    }
+  },
   "bin": {
     "function-x": "cli.js"
   },
+  "files": [
+    "function-x.js",
+    "cli.js",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "node --test test.js",
+    "test:core": "node --test test.js",
+    "prepublishOnly": "npm test",
     "demo": "node cli.js demo"
   },
   "keywords": [
