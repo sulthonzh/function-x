@@ -174,63 +174,79 @@ test('memoizeClear function', () => {
 });
 
 // Debouncing
-test('debounce function', (done) => {
+test('debounce function', async () => {
   let callCount = 0;
+  
   const debounced = fx.debounce(() => {
     callCount++;
-    assert.strictEqual(callCount, 1);
-    done();
   }, 100);
   
   debounced();
   debounced();
   debounced();
+  
+  // Wait for debounce to complete
+  await new Promise(resolve => setTimeout(resolve, 150));
+  assert.strictEqual(callCount, 1);
 });
 
-test('debounceLeading function', (done) => {
+test('debounceLeading function', async () => {
   let callCount = 0;
+  
   const debounced = fx.debounceLeading(() => {
     callCount++;
-    assert.strictEqual(callCount, 1);
-    done();
   }, 100);
   
   debounced();
   assert.strictEqual(callCount, 1); // Should call immediately
   debounced(); // Should not call again
+  
+  // Wait to ensure no additional calls
+  await new Promise(resolve => setTimeout(resolve, 150));
+  assert.strictEqual(callCount, 1); // Still should be 1
 });
 
 // Throttling
-test('throttle function', (done) => {
+test('throttle function', async () => {
   let callCount = 0;
+  
   const throttled = fx.throttle(() => {
     callCount++;
-    if (callCount === 1) {
-      assert.strictEqual(callCount, 1);
-      done();
-    }
   }, 100);
   
   throttled(); // Called immediately
+  assert.strictEqual(callCount, 1);
+  
   throttled(); // Should be throttled
   throttled(); // Should be throttled
+  
+  // Wait to ensure throttling worked
+  await new Promise(resolve => setTimeout(resolve, 50));
+  assert.strictEqual(callCount, 1); // Still should be 1
 });
 
-test('throttleLeading function', (done) => {
+test('throttleLeading function', async () => {
   let callCount = 0;
+  
   const throttled = fx.throttleLeading(() => {
     callCount++;
-    assert.strictEqual(callCount, 1);
-    done();
   }, 100);
   
   throttled(); // Should call immediately
+  assert.strictEqual(callCount, 1);
+  
   throttled(); // Should be throttled
+  
+  // Wait to ensure throttling worked
+  await new Promise(resolve => setTimeout(resolve, 50));
+  assert.strictEqual(callCount, 1); // Still should be 1
 });
 
 // Rate limiting
 test('rateLimit function', async () => {
   let callCount = 0;
+  const startTime = Date.now();
+  
   const rateLimited = fx.rateLimit((x) => {
     callCount++;
     return x;
@@ -243,8 +259,14 @@ test('rateLimit function', async () => {
     rateLimited(4)  // This should be delayed
   ]);
   
-  assert.strictEqual(callCount, 2); // Only 2 calls should have executed
-  assert.deepStrictEqual(results, [1, 2, 3, 4]); // All should resolve eventually
+  assert.strictEqual(callCount, 4); // All calls should execute eventually
+  assert.deepStrictEqual(results, [1, 2, 3, 4]); // All should resolve in order
+  
+  const totalTime = Date.now() - startTime;
+  // Should take some time due to rate limiting (not instantaneous)
+  // First 2 calls are immediate, next 2 wait ~250ms (interval/limit)
+  assert.ok(totalTime >= 200, `Total time ${totalTime}ms should be at least 200ms`);
+  assert.ok(totalTime < 600, `Total time ${totalTime}ms should be less than 600ms`);
 });
 
 // Once
@@ -298,7 +320,7 @@ test('before function', () => {
 test('spread function', () => {
   const sum = (arr) => arr.reduce((a, b) => a + b, 0);
   const spreadSum = fx.spread(sum);
-  assert.strictEqual(spreadSum([1, 2, 3, 4]), 10);
+  assert.strictEqual(spreadSum(1, 2, 3, 4), 10);
 });
 
 // OverArgs
@@ -308,7 +330,7 @@ test('overArgs function', () => {
   const add2 = x => x + 2;
   
   const overAdd = fx.overArgs(add, [add1, add2]);
-  assert.strictEqual(overAdd(1, 1), 6); // (1+1) + (1+2) = 2 + 3 = 5
+  assert.strictEqual(overAdd(1, 1), 5); // (1+1) + (1+2) = 2 + 3 = 5
 });
 
 // Factory functions
