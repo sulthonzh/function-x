@@ -29,5 +29,15 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "files": [
+    "function-x.js",
+    "cli.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "homepage": "https://github.com/sulthonzh/function-x#readme",
+  "bugs": {
+    "url": "https://github.com/sulthonzh/function-x/issues"
   }
 }
