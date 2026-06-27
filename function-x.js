@@ -185,7 +185,11 @@ export const debounce = (fn, wait, options = {}) => {
     
     if (timeoutId === undefined) {
       if (leading) {
-        return invokeFunc(time);
+        const result = invokeFunc(time);
+        if (trailing) {
+          timeoutId = setTimeout(timerExpired, wait);
+        }
+        return result;
       }
       timeoutId = setTimeout(timerExpired, wait);
     }
@@ -272,10 +276,12 @@ export const throttle = (fn, wait, options = {}) => {
       return invokeFunc(time);
     }
     
-    if (timeoutId === undefined && trailing) {
+    if (trailing) {
       lastArgs = args;
       lastThis = this;
-      timeoutId = setTimeout(timerExpired, wait);
+      if (timeoutId === undefined) {
+        timeoutId = setTimeout(timerExpired, wait);
+      }
     }
     
     return undefined;

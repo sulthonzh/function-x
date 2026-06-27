@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- c8 test coverage reporting (`npm run test:coverage`)
+- 19 new tests covering: ternary, isGeneratorFunction, memoizeSync, over (array/non-function), curry (3 args), curryN (arity 1, progressive), debounceTrailing, debounceBoth, debounce cancel/flush, throttleTrailing, throttleBoth, throttle cancel/flush, createMemoizer (weak/default), createThrottler, createDebouncer
+- Test count: 26 → 49 (100% pass rate)
+- Coverage: 97.45% statements, 92.36% branches, 100% functions
+
+### Fixed
+- `debounce({leading: true, trailing: true})` never fired the trailing call — `invokeFunc` set `timeoutId = null` which failed the `=== undefined` check for timer scheduling
+- `throttle` trailing args not captured for calls within the wait window when `timeoutId` was already set
+
 ## [1.1.0] - 2026-06-20
 
 ### Added

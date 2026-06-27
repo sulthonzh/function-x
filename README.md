@@ -1,6 +1,6 @@
 # function-x - Zero-dependency Higher-order Function Utilities
 
-**Zero-dependency functional programming utilities for JavaScript. 26 tests, 100% pass rate, currying, composition, memoization, debouncing, throttling, and rate limiting — all in <6KB with zero dependencies.**
+**Zero-dependency functional programming utilities for JavaScript. 49 tests, 100% pass rate, currying, composition, memoization, debouncing, throttling, and rate limiting — all in <6KB with zero dependencies.**
 
 [![npm version](https://badge.fury.io/js/function-x.svg)](https://badge.fury.io/js/function-x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -23,7 +23,7 @@
 - **Zero dependencies** — no bloat, no security concerns, no install overhead
 - **Focused toolkit** — 20+ essential higher-order functions, not 300+ rarely-used utilities
 - **Modern ES modules** — tree-shakeable, native browser support, zero bundler required
-- **Production-ready** — 26 tests, 100% pass rate, async-first design
+- **Production-ready** — 49 tests, 100% pass rate, async-first design
 - **Practical utilities** — debounce, throttle, rate limit, memoize for real-world use cases
 - **Lightweight** — <6KB unminified, ~1KB gzipped, smaller than most alternatives
 

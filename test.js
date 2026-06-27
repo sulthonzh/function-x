@@ -374,4 +374,254 @@ test('memoize with custom resolver', () => {
   assert.strictEqual(callCount, 2);
 });
 
+// === Additional tests for coverage improvement ===
+
+// ternary function
+test('ternary function', () => {
+  const add3 = (x, y, z) => x + y + z;
+  const ternaryAdd = fx.ternary(add3);
+  assert.strictEqual(ternaryAdd(1, 2, 3), 6);
+  
+  // Already 3-arg function should be returned as-is
+  const sameFn = (a, b, c) => a * b * c;
+  const ternarySame = fx.ternary(sameFn);
+  assert.strictEqual(ternarySame(2, 3, 4), 24);
+});
+
+// isGeneratorFunction
+test('isGeneratorFunction', () => {
+  assert.strictEqual(fx.isGeneratorFunction(function*() {}), true);
+  assert.strictEqual(fx.isGeneratorFunction(function* gen() {}), true);
+  assert.strictEqual(fx.isGeneratorFunction(() => {}), false);
+  assert.strictEqual(fx.isGeneratorFunction(42), false);
+});
+
+// memoizeSync
+test('memoizeSync function', () => {
+  let callCount = 0;
+  const expensive = x => {
+    callCount++;
+    return x + 1;
+  };
+  
+  const memoized = fx.memoizeSync(expensive);
+  assert.strictEqual(memoized(5), 6);
+  assert.strictEqual(callCount, 1);
+  assert.strictEqual(memoized(5), 6); // Cached
+  assert.strictEqual(callCount, 1);
+  assert.strictEqual(memoized(10), 11);
+  assert.strictEqual(callCount, 2);
+});
+
+// over with array
+test('over function with array', () => {
+  const fns = [x => x + 1, x => x * 2, x => x - 3];
+  const result = fx.over(fns)(5);
+  assert.deepStrictEqual(result, [6, 10, 2]);
+});
+
+// over with non-function value
+test('over function with non-function value', () => {
+  const result = fx.over(42)(5);
+  assert.deepStrictEqual(result, [42]);
+});
+
+// curry with more than 2 args
+test('curry with 3 args', () => {
+  const add3 = (a, b, c) => a + b + c;
+  const curried = fx.curry(add3);
+  assert.strictEqual(curried(1)(2)(3), 6);
+  assert.strictEqual(curried(1, 2)(3), 6);
+  assert.strictEqual(curried(1, 2, 3), 6);
+});
+
+// curryN edge cases
+test('curryN with arity 1', () => {
+  const double = x => x * 2;
+  const curried = fx.curryN(1, double);
+  assert.strictEqual(curried(5), 10);
+});
+
+test('curryN with progressive invocation', () => {
+  const add3 = (a, b, c) => a + b + c;
+  const curried = fx.curryN(3, add3);
+  const step1 = curried(1);
+  const step2 = step1(2);
+  assert.strictEqual(step2(3), 6);
+});
+
+// debounceTrailing
+test('debounceTrailing function', async () => {
+  let callCount = 0;
+  const debounced = fx.debounceTrailing(() => {
+    callCount++;
+  }, 50);
+  
+  debounced();
+  assert.strictEqual(callCount, 0); // Not called immediately
+  
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 1); // Called after trailing edge
+});
+
+// debounceBoth
+test('debounceBoth function', async () => {
+  let callCount = 0;
+  const debounced = fx.debounceBoth(() => {
+    callCount++;
+  }, 50);
+  
+  debounced();
+  assert.strictEqual(callCount, 1); // Leading call
+  
+  debounced();
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 2); // Trailing call
+});
+
+// debounce cancel and flush
+test('debounce cancel function', async () => {
+  let callCount = 0;
+  const debounced = fx.debounce(() => {
+    callCount++;
+  }, 100);
+  
+  debounced();
+  debounced.cancel();
+  
+  await new Promise(resolve => setTimeout(resolve, 150));
+  assert.strictEqual(callCount, 0); // Cancelled before firing
+});
+
+test('debounce flush function', async () => {
+  let callCount = 0;
+  const debounced = fx.debounce(() => {
+    callCount++;
+  }, 100);
+  
+  debounced();
+  debounced.flush(); // Should invoke immediately
+  assert.strictEqual(callCount, 1);
+  
+  await new Promise(resolve => setTimeout(resolve, 150));
+  assert.strictEqual(callCount, 1); // No additional call
+});
+
+// throttleTrailing
+test('throttleTrailing function', async () => {
+  let callCount = 0;
+  const throttled = fx.throttleTrailing(() => {
+    callCount++;
+  }, 50);
+  
+  throttled();
+  assert.strictEqual(callCount, 0); // No leading call
+  
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 1); // Trailing call fired
+});
+
+// throttleBoth
+test('throttleBoth function', async () => {
+  let callCount = 0;
+  const throttled = fx.throttleBoth(() => {
+    callCount++;
+  }, 50);
+  
+  throttled();
+  assert.strictEqual(callCount, 1); // Leading call
+  throttled(); // Second call, should trigger trailing
+  
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 2); // Trailing call
+});
+
+// throttle cancel and flush
+test('throttle cancel function', async () => {
+  let callCount = 0;
+  const throttled = fx.throttle(() => {
+    callCount++;
+  }, 50);
+  
+  throttled();
+  throttled(); // Schedule trailing
+  throttled.cancel();
+  
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 1); // Only leading call, trailing cancelled
+});
+
+test('throttle flush function', async () => {
+  let callCount = 0;
+  const throttled = fx.throttle(() => {
+    callCount++;
+  }, 100);
+  
+  throttled();
+  throttled(); // Schedule trailing
+  throttled.flush(); // Invoke trailing immediately
+  assert.strictEqual(callCount, 2);
+});
+
+// createMemoizer with weak cache
+test('createMemoizer with weak cache', () => {
+  const memoizer = fx.createMemoizer('weak');
+  let callCount = 0;
+  
+  const objKey = { id: 1 };
+  const fn = (key) => {
+    callCount++;
+    return key.id * 2;
+  };
+  const resolver = (key) => key;
+  
+  const memoized = memoizer(fn, resolver);
+  assert.strictEqual(memoized(objKey), 2);
+  assert.strictEqual(callCount, 1);
+  assert.strictEqual(memoized(objKey), 2); // Cached
+  assert.strictEqual(callCount, 1);
+});
+
+// createMemoizer default fallback
+test('createMemoizer default fallback', () => {
+  const memoizer = fx.createMemoizer('unknown');
+  let callCount = 0;
+  const fn = x => { callCount++; return x * 3; };
+  const memoized = memoizer(fn);
+  assert.strictEqual(memoized(5), 15);
+  assert.strictEqual(callCount, 1);
+  assert.strictEqual(memoized(5), 15);
+  assert.strictEqual(callCount, 1);
+});
+
+// createThrottler factory
+test('createThrottler factory', async () => {
+  let callCount = 0;
+  const throttler = fx.createThrottler({ leading: true, trailing: false });
+  const throttled = throttler(() => {
+    callCount++;
+  }, 50);
+  
+  throttled();
+  assert.strictEqual(callCount, 1); // Leading
+  
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 1); // No trailing
+});
+
+// createDebouncer factory
+test('createDebouncer factory', async () => {
+  let callCount = 0;
+  const debouncer = fx.createDebouncer({ leading: true, trailing: false });
+  const debounced = debouncer(() => {
+    callCount++;
+  }, 50);
+  
+  debounced();
+  assert.strictEqual(callCount, 1); // Leading
+  
+  await new Promise(resolve => setTimeout(resolve, 80));
+  assert.strictEqual(callCount, 1); // No trailing
+});
+
 console.log('🎉 All tests passed!');
