@@ -1,7 +1,7 @@
 {
   "name": "function-x",
   "version": "1.1.0",
-  "description": "Zero-dependency higher-order function utilities for currying, composition, memoization, debouncing, throttling, and rate limiting. 49 tests, 100% pass rate — all in <6KB with zero dependencies.",
+  "description": "Zero-dependency higher-order function utilities for currying, composition, memoization, debouncing, throttling, and rate limiting. 50 tests, 100% pass rate — all in <6KB with zero dependencies.",
   "type": "module",
   "main": "function-x.js",
   "exports": {

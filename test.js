@@ -4,32 +4,9 @@
  * Test suite for function-x - Higher-order function utilities
  */
 
+import { test, describe } from 'node:test';
+import assert from 'node:assert/strict';
 import * as fx from './function-x.js';
-import assert from 'assert';
-
-// Test helpers
-const test = (name, fn) => {
-  try {
-    fn();
-    console.log(`✅ ${name}`);
-  } catch (error) {
-    console.log(`❌ ${name}: ${error.message}`);
-    throw error;
-  }
-};
-
-const throws = (name, fn, expectedError) => {
-  try {
-    fn();
-    throw new Error(`Expected to throw ${expectedError}`);
-  } catch (error) {
-    if (error.message.includes(expectedError)) {
-      console.log(`✅ ${name}`);
-    } else {
-      throw new Error(`${name}: Expected ${expectedError}, got ${error.message}`);
-    }
-  }
-};
 
 // Basic identity and utility functions
 test('identity function', () => {
@@ -109,7 +86,6 @@ test('curryN function', () => {
   const multiply = (a, b, c) => a * b * c;
   const multiply2 = fx.curryN(2, multiply);
   assert.strictEqual(multiply2(2, 3, 4), 24); // Passes all args to function
-  // Note: curryN with arity 2 for a 3-arg function is unusual, this test shows the behavior
 });
 
 // Partial application
@@ -263,8 +239,6 @@ test('rateLimit function', async () => {
   assert.deepStrictEqual(results, [1, 2, 3, 4]); // All should resolve in order
   
   const totalTime = Date.now() - startTime;
-  // Should take some time due to rate limiting (not instantaneous)
-  // First 2 calls are immediate, next 2 wait ~250ms (interval/limit)
   assert.ok(totalTime >= 200, `Total time ${totalTime}ms should be at least 200ms`);
   assert.ok(totalTime < 600, `Total time ${totalTime}ms should be less than 600ms`);
 });
@@ -623,5 +597,3 @@ test('createDebouncer factory', async () => {
   await new Promise(resolve => setTimeout(resolve, 80));
   assert.strictEqual(callCount, 1); // No trailing
 });
-
-console.log('🎉 All tests passed!');
