@@ -66,13 +66,15 @@ test('binary function', () => {
 });
 
 test('negate function', () => {
-  assert.strictEqual(fx.negate(true), false);
-  assert.strictEqual(fx.negate(false), true);
+  const isEven = x => x % 2 === 0;
+  const isOdd = fx.negate(isEven);
+  assert.strictEqual(isOdd(3), true);
+  assert.strictEqual(isOdd(4), false);
 });
 
 test('tap function', () => {
   let sideEffectValue = null;
-  const result = fx.tap(42, value => {
+  const result = fx.tap(42)(value => {
     sideEffectValue = value;
   });
   assert.strictEqual(sideEffectValue, 42);
@@ -83,14 +85,14 @@ test('over function', () => {
   const toUpper = x => x.toUpperCase();
   const toLower = x => x.toLowerCase();
   
-  const result1 = fx.over(toUpper, 'Hello');
+  const result1 = fx.over(toUpper)('Hello');
   assert.strictEqual(result1, 'HELLO');
   
-  const result2 = fx.over(toLower, 'Hello');
+  const result2 = fx.over(toLower)('Hello');
   assert.strictEqual(result2, 'hello');
   
   // Test with array of functions
-  const overText = fx.over([toUpper, toLower], 'Hello');
+  const overText = fx.over([toUpper, toLower])('Hello');
   assert.deepStrictEqual(overText, ['HELLO', 'hello']);
 });
 
