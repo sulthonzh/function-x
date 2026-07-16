@@ -597,3 +597,77 @@ test('createDebouncer factory', async () => {
   await new Promise(resolve => setTimeout(resolve, 80));
   assert.strictEqual(callCount, 1); // No trailing
 });
+
+// === Coverage gap tests (2026-07-16 audit) ===
+
+test('debounce timerExpired re-scheduling with maxWait', async () => {
+  // Cover lines 172-177: the timeSinceLastInvoke / timeWaiting path in debounce timerExpired
+  let callCount = 0;
+  const debounced = fx.debounce((x) => {
+    callCount++;
+    return x;
+  }, 100, { maxWait: 150, leading: false, trailing: true });
+  
+  debounced('a');
+  await new Promise(r => setTimeout(r, 50));
+  debounced('b');
+  await new Promise(r => setTimeout(r, 120));
+  assert.strictEqual(callCount, 1);
+});
+
+test('throttle timerExpired re-scheduling path', async () => {
+  // Cover lines 263-265: throttle timerExpired when shouldInvoke is false
+  let callCount = 0;
+  const throttled = fx.throttle((x) => {
+    callCount++;
+    return x;
+  }, 50, { leading: false, trailing: true });
+  
+  throttled('a');
+  await new Promise(r => setTimeout(r, 20));
+  throttled('b');
+  await new Promise(r => setTimeout(r, 20));
+  throttled('c');
+  
+  await new Promise(r => setTimeout(r, 80));
+  assert.ok(callCount >= 1);
+});
+
+test('rateLimit with synchronous (non-Promise) function', async () => {
+  // Cover line 334: the else branch where fn returns non-Promise
+  const fn = (x) => x * 2;
+  const rateLimited = fx.rateLimit(fn, 2, 100);
+  
+  const result = await rateLimited(5);
+  assert.strictEqual(result, 10);
+});
+
+test('rateLimit with throwing function', async () => {
+  // Cover lines 339-340: the catch branch where fn throws
+  const fn = () => { throw new Error('boom'); };
+  const rateLimited = fx.rateLimit(fn, 1, 100);
+  
+  await assert.rejects(async () => {
+    await rateLimited('test');
+  }, { message: 'boom' });
+});
+
+test('rateLimit processes queue with multiple items', async () => {
+  // Cover the queue processing loop more thoroughly
+  const results = [];
+  const fn = async (x) => { 
+    results.push(x); 
+    return x; 
+  };
+  const rateLimited = fx.rateLimit(fn, 2, 100);
+  
+  const promises = [
+    rateLimited(1),
+    rateLimited(2),
+    rateLimited(3),
+    rateLimited(4),
+  ];
+  
+  await Promise.all(promises);
+  assert.deepStrictEqual(results, [1, 2, 3, 4]);
+});
