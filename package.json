@@ -21,8 +21,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test.js",
-    "test:coverage": "c8 node --test test.js",
+    "test": "node --test test.js test/coverage-gaps.test.js",
+    "test:coverage": "c8 --include='function-x.js' --include='cli.js' node --test test.js test/coverage-gaps.test.js",
     "test:core": "node --test test.js",
     "prepublishOnly": "npm test",
     "demo": "node cli.js demo"
