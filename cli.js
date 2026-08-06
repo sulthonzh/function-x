@@ -5,7 +5,7 @@
  */
 
 import * as fx from './function-x.js';
-import { readFileSync } from 'fs';
+// readFileSync not needed — using createRequire for package.json
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');

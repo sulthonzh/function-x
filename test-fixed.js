@@ -18,7 +18,7 @@ const test = (name, fn) => {
   }
 };
 
-const throws = (name, fn, expectedError) => {
+const _throws = (name, fn, expectedError) => {
   try {
     fn();
     throw new Error(`Expected to throw ${expectedError}`);

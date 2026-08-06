@@ -7,7 +7,7 @@
  *            cli.js catch block (lines 178-180)
  */
 
-import { test, describe } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import * as fx from '../function-x.js';

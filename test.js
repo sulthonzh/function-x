@@ -4,7 +4,7 @@
  * Test suite for function-x - Higher-order function utilities
  */
 
-import { test, describe } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as fx from './function-x.js';
 

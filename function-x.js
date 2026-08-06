@@ -314,7 +314,7 @@ export const throttleBoth = (fn, wait) =>
 
 // Rate limiting
 export const rateLimit = (fn, limit, interval) => {
-  let queue = [];
+  const queue = [];
   let activeCount = 0;
   
   return function(...args) {
