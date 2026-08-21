@@ -2,7 +2,7 @@
 
 **Zero-dependency functional programming utilities for JavaScript. 49 tests, 100% pass rate, currying, composition, memoization, debouncing, throttling, and rate limiting — all in <6KB with zero dependencies.**
 
-[![npm version](https://badge.fury.io/js/function-x.svg)](https://badge.fury.io/js/function-x)
+[![npm version](https://badge.fury.io/js/%40sulthonzh%2Ffunction-x.svg)](https://badge.fury.io/js/@sulthonzh/function-x)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ✨ Features
@@ -30,7 +30,7 @@
 ## 🎯 Quick Start
 
 ```javascript
-import * as fx from 'function-x';
+import * as fx from '@sulthonzh/function-x';
 
 // Currying
 const add = fx.curry((a, b) => a + b);
@@ -56,14 +56,14 @@ debouncedLog('Hello'); // Logs after 300ms of no calls
 ## 📦 Installation
 
 ```bash
-npm install function-x
+npm install @sulthonzh/function-x
 ```
 
 Or use directly in the browser:
 
 ```html
 <script type="module">
-  import * as fx from 'https://unpkg.com/function-x@1.1.0/function-x.js';
+  import * as fx from 'https://unpkg.com/@sulthonzh/function-x@1.1.0/function-x.js';
 </script>
 ```
 
@@ -250,13 +250,13 @@ const throttled = createThrottler(console.log, 200);
 
 ```bash
 # Run interactive demo
-npx function-x demo
+npx @sulthonzh/function-x demo
 
 # Show help
-npx function-x help
+npx @sulthonzh/function-x help
 
 # Show version
-npx function-x version
+npx @sulthonzh/function-x version
 ```
 
 The CLI provides an interactive demonstration of all functions with practical examples.
@@ -339,7 +339,7 @@ The CLI provides an interactive demonstration of all functions with practical ex
 ### Functional Pipelines
 
 ```javascript
-import * as fx from 'function-x';
+import * as fx from '@sulthonzh/function-x';
 
 const users = [
   { name: 'Alice', age: 25, active: true },
@@ -409,7 +409,7 @@ const results = await Promise.all([
 ### Example 1: Event Handling in Web Apps
 
 ```javascript
-import * as fx from 'function-x';
+import * as fx from '@sulthonzh/function-x';
 
 // Debounce search input to avoid excessive API calls
 const handleSearch = fx.debounce((query) => {
@@ -436,7 +436,7 @@ window.addEventListener('scroll', handleScroll);
 ### Example 2: API Rate Limiting in Node.js
 
 ```javascript
-import * as fx from 'function-x';
+import * as fx from '@sulthonzh/function-x';
 
 // Rate-limit GitHub API calls (5000 requests/hour limit)
 const githubApi = fx.rateLimit(async (endpoint) => {
@@ -458,7 +458,7 @@ const users = await Promise.all([
 ### Example 3: Functional Data Processing Pipeline
 
 ```javascript
-import * as fx from 'function-x';
+import * as fx from '@sulthonzh/function-x';
 
 // Transform raw sales data into daily revenue report
 const processSalesData = fx.pipe(
